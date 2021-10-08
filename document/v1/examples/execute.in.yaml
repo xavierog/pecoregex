@@ -1,0 +1,15 @@
+# This document contains a single pattern against which two subjects should be matched.
+patterns:
+# Note the pattern contains a named capture:
+- value: '^(?i)hello(?<tail>.*)'
+  # subjects are listed under the "execute" attribute:
+  execute:
+
+  # This subject will not match: its "match" attribute will be set to False.
+  - subject: 'Goodbye!'
+
+  # Subjects may feature execution-time options:
+  - subject: 'Hello!'
+    options: 'no_start_optimise'
+  # This one will match: its "match" attribute will be set to True and its "captures" attribute will reflect both
+  # numbered and named captures.

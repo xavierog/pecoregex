@@ -1,0 +1,63 @@
+# In a pecoregex document, it is possible to declare various things once and reuse them multiple times.
+# This is true for patterns:
+pattern_strings:
+- 'hello'
+- '^(?i)hello(?<tail>.*)'
+- '(?<before>\w+)\s+quia\s+(?<after>\w+)'
+
+# Subjects:
+subject_strings:
+- Hello!
+- Goodbye!
+- -|-
+  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam,
+  eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam
+  voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
+  voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci
+  velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim
+  ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+  consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur,
+  vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+
+# Compile-time option sets:
+compile_options:
+- caseless
+- anchored
+- - caseless
+  - anchored
+
+# Execution-time option sets:
+execute_options:
+- 'no_utf8_check|no_start_optimise'
+
+# All these reference values can be invoked using their index (which starts at 0); take care to state indices as
+# integers (as opposed to strings).
+patterns:
+
+# Leverage references to match the same subject against the same pattern using different compile-time options.
+- value: 0     # refer to pattern_strings[0], i.e. 'hello'
+  options: 0   # refer to compile_options[0], i.e. 'caseless'
+  execute:
+  - subject: 0 # refer to subject_strings[0], i.e. 'Hello!'
+    options: 0 # refer to execute_options[0], i.e. 'no_utf8_check|no_start_optimise'
+- value: 0 
+  options: 1   # refer to compile_options[1], i.e. 'anchored'
+  execute:
+  - subject: 0
+    options: 0
+- value: 0 
+  options: 2   # refer to compile_options[2], i.e. 'caseless|anchored'
+  execute:
+  - subject: 0
+    options: 0
+
+# Leverage references to match that lengthy latin excerpt against all 3 patterns without repeating it:
+- value: 0
+  execute:
+  - subject: 2
+- value: 1
+  execute:
+  - subject: 2
+- value: 2
+  execute:
+  - subject: 2

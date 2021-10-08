@@ -1,0 +1,20 @@
+patterns:
+- compile: true
+  error:
+    message: null
+    offset: null
+  execute:
+  - captures: {}
+    match: false
+    subject: Goodbye!
+  - captures:
+      by_index:
+      - Hello!
+      - '!'
+      by_name:
+        tail: '!'
+    match: true
+    options:
+    - PCRE_NO_START_OPTIMISE
+    subject: Hello!
+  value: ^(?i)hello(?<tail>.*)

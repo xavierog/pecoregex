@@ -1,0 +1,27 @@
+patterns:
+- compile: true
+  error:
+    message: null
+    offset: null
+  value: ^(?i)hello
+- compile: true
+  error:
+    message: null
+    offset: null
+  options:
+  - PCRE_ANCHORED
+  - PCRE_CASELESS
+  value: hello
+- compile: true
+  error:
+    message: null
+    offset: null
+  options:
+  - PCRE_CASELESS
+  - PCRE_ANCHORED
+  value: hello
+- compile: false
+  error:
+    message: missing )
+    offset: 6
+  value: hello(

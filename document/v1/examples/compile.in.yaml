@@ -1,0 +1,21 @@
+# This document holds 4 patterns.
+# Once processed, it will reflect whether each pattern successfully compiles through the "compile" boolean attribute.
+patterns:
+
+# The simplest way to declare a pattern:
+- value: '^(?i)hello'
+
+# It is possible to state an array of compile-time options:
+- value: 'hello'
+  options:
+  - 'PCRE_ANCHORED'
+  - 'PCRE_CASELESS'
+
+# Options can be expressed like this too:
+- value: 'hello'
+  options: 'caseless|anchored'
+# By default, pecoregex normalises such options into an array of uppercase, "PCRE_"-prefixed options.
+
+# This one will not compile; the "error" attribute will reflect both the compile error ("message" attribute) and the
+# offset it was found at ("offset" attribute)
+- value: 'hello('

@@ -1,0 +1,224 @@
+{
+	"schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.org/xavierog/pecoregex/master/document/v1/schema.json",
+	"title": "Pecoregex document",
+	"description": "A Pecoregex documents holds 1 to n PCRE (Perl-Compatible Regular Expression) patterns.\nEach pattern is associated with 0 to n subject strings.",
+	"$defs": {
+		"pcre_pattern_string": {
+			"type": "string",
+			"description": "PCRE pattern string"
+		},
+		"subject_string": {
+			"type": "string",
+			"description": "subject string to be matched against a PCRE pattern"
+		},
+		"pcre_option_string": {
+			"type": "string",
+			"description": "1 to n PCRE_* constant, separated using pipe characters ('|'); spaces are ignored, case is irrelevant and the\n\"PCRE_\" prefix can be omitted"
+		},
+		"pcre_option_array": {
+			"type": "array",
+			"description": "set of PCRE options",
+			"items": {
+				"$ref": "#/$defs/pcre_option_string"
+			}
+		},
+		"compile_option_ref": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "index of a PCRE option set in the \"compile_options\" property"
+		},
+		"execute_option_ref": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "index of a PCRE option set in the \"execute_options\" property"
+		},
+		"pattern_string_ref": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "index of a PCRE pattern string in the \"pattern_strings\" property"
+		},
+		"subject_string_ref": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "index of a subject string in the \"subject_strings\" property"
+		},
+		"captures": {
+			"type": "object",
+			"properties": {
+				"by_index": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"description": "numbered captures"
+					}
+				},
+				"by_name": {
+					"type": "object",
+					"description": "named captures",
+					"patternProperties": {
+						"^[a-zA-Z0-9_]{1,32}$": {
+							"type": [
+								"string",
+								"null"
+							]
+						}
+					}
+				}
+			}
+		},
+		"pattern": {
+			"type": "object",
+			"properties": {
+				"value": {
+					"oneOf": [
+						{
+							"$ref": "#/$defs/pattern_string_ref"
+						},
+						{
+							"$ref": "#/$defs/pcre_pattern_string"
+						}
+					]
+				},
+				"options": {
+					"oneOf": [
+						{
+							"$ref": "#/$defs/compile_option_ref"
+						},
+						{
+							"$ref": "#/$defs/pcre_option_array"
+						},
+						{
+							"$ref": "#/$defs/pcre_option_string"
+						}
+					]
+				},
+				"compile": {
+					"type": "boolean",
+					"description": "True if the pattern successfully compiled, false otherwise."
+				},
+				"error": {
+					"type": "object",
+					"properties": {
+						"message": {
+							"type": [
+								"string",
+								"null"
+							],
+							"description": "error message provided by pcre_compile()"
+						},
+						"offset": {
+							"type": [
+								"integer",
+								"null"
+							],
+							"description": "Offset at which the error was detected within the PCRE pattern to compile"
+						}
+					}
+				},
+				"execute": {
+					"$ref": "#/$defs/execute"
+				}
+			},
+			"required": [
+				"value"
+			]
+		},
+		"execute": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"subject": {
+						"oneOf": [
+							{
+								"$ref": "#/$defs/subject_string_ref"
+							},
+							{
+								"$ref": "#/$defs/subject_string"
+							}
+						]
+					},
+					"options": {
+						"oneOf": [
+							{
+								"$ref": "#/$defs/execute_option_ref"
+							},
+							{
+								"$ref": "#/$defs/pcre_option_array"
+							},
+							{
+								"$ref": "#/$defs/pcre_option_string"
+							}
+						]
+					},
+					"match": {
+						"type": "boolean",
+						"description": "True if the subject string matched against its parent pattern, false otherwise."
+					},
+					"captures": {
+						"$ref": "#/$defs/captures"
+					}
+				},
+				"required": [
+					"subject"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"properties": {
+		"pattern_strings": {
+			"type": "array",
+			"description": "array of PCRE patterns that can be referenced later in the document",
+			"items": {
+				"$ref": "#/$defs/pcre_pattern_string"
+			}
+		},
+		"compile_options": {
+			"type": "array",
+			"description": "array of PCRE options compatible with pcre_compile()",
+			"items": {
+				"anyOf": [
+					{
+						"$ref": "#/$defs/pcre_option_string"
+					},
+					{
+						"$ref": "#/$defs/pcre_option_array"
+					}
+				]
+			}
+		},
+		"subject_strings": {
+			"type": "array",
+			"description": "array of subject strings that can be referenced later in the document",
+			"items": {
+				"$ref": "#/$defs/subject_string"
+			}
+		},
+		"execute_options": {
+			"type": "array",
+			"description": "array of PCRE options compatible with pcre_exec()",
+			"items": {
+				"anyOf": [
+					{
+						"$ref": "#/$defs/pcre_option_string"
+					},
+					{
+						"$ref": "#/$defs/pcre_option_array"
+					}
+				]
+			}
+		},
+		"patterns": {
+			"type": "array",
+			"description": "array of PCRE patterns to compile and optionally execute",
+			"items": {
+				"$ref": "#/$defs/pattern"
+			}
+		}
+	},
+	"required": [
+		"patterns"
+	]
+}
