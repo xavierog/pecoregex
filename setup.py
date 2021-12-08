@@ -7,7 +7,7 @@ with open('README.md', 'r') as readme:
 
 setup(
 	name='pecoregex',
-	version='1.0.0',
+	version='1.1.0',
 	description='Evaluate Perl-Compatible Regular Expressions',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
