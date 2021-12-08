@@ -10,6 +10,7 @@ functions. Therefore, it does not require any kind of compilation when running "
 """
 
 import ctypes
+from ctypes.util import find_library
 from struct import unpack
 
 # (almost) straight from pcre.h:
@@ -156,9 +157,9 @@ class PCRELibrary:
 	"""
 	Offer a thin abstraction layer on top of the most popular libpcre functions.
 	"""
-	def __init__(self, soname='libpcre.so', encode='utf-8', decode='utf-8', ovector_size=60):
+	def __init__(self, soname=None, encode='utf-8', decode='utf-8', ovector_size=60):
 		"""
-		soname: filename of the libpcre shared object
+		soname: filename of the libpcre shared object, or None for autodetection.
 		encode: encoding used to turn patterns and subjects into bytes before passing them to libpcre functions.
 		decode: encoding used to turn capture values into regular Python strings.
 		ovector_size: refer to libpcre documentation
@@ -175,6 +176,10 @@ class PCRELibrary:
 		Simple wrapper around ctypes.CDLL to load libpcre.so (specifically shared_object_name).
 		"""
 		if self.libpcre is None:
+			if self.shared_object_name is None:
+				self.shared_object_name = find_library('pcre')
+				if self.shared_object_name is None:
+					self.shared_object_name = 'libpcre.so.1'
 			self.libpcre = ctypes.CDLL(self.shared_object_name)
 		return self.libpcre
 
