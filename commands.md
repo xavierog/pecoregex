@@ -5,7 +5,8 @@ Run tests:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-.venv/bin/pylint --rcfile=pylintrc src/pecoregex | less
+pip install pyyaml pylint pytest
+pylint --rcfile=pylintrc src/pecoregex | less
 pip install -e .
 pytest -q
 ```
@@ -32,6 +33,7 @@ python -m build
 
 Push pecoregex to Python repositories:
 ```bash
+pip install twine
 python -m twine upload --repository testpypi dist/*
 python -m twine upload --repository pypi dist/*
 ```
